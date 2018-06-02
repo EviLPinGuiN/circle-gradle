@@ -1,0 +1,29 @@
+<idea-plugin>
+    <id>com.itis.circle</id>
+    <name>CircleCI plugin</name>
+    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">
+        Dinmukhametov Aynur,
+        Shaykhraziev Nail
+    </vendor>
+
+    <description><![CDATA[
+         CircleCI integration plugin
+    ]]></description>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="CircleCI" icon="/drawables/ic_circle.png" anchor="right"
+                    factoryClass="ShowWindows"/>
+    </extensions>
+
+    <depends>com.intellij.modules.lang</depends>
+
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
+</idea-plugin>
