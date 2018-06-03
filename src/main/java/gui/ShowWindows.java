@@ -1,3 +1,5 @@
+package gui;
+
 import api.ApiClient;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
@@ -70,7 +72,7 @@ public class ShowWindows implements ToolWindowFactory {
     private void createScene() {
         String token = stat.getToken();
         ApiClient.getPhraseService()
-                .getProfile(token)
+                .getProfile()
                 .map(UserHolder::getGithubUserHolder)
                 .map(GithubUserHolder::getGithubUser)
                 .subscribeOn(Schedulers.io())
