@@ -1,6 +1,6 @@
 package api;
 
-import com.itis.BuildConfig;
+import gui.StaticComponents;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.Request;
@@ -28,7 +28,8 @@ public final class TokenInterceptor implements Interceptor {
     }
 
     private HttpUrl getUrl(Request request) {
-        String key = BuildConfig.TEST_TOKEN;
+        final StaticComponents stat = StaticComponents.getInstance();
+        String key = stat.getToken();
         return request.url().newBuilder()
                 .addQueryParameter(API_KEY_PARAM, key)
                 .build();

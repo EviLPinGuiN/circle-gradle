@@ -1,3 +1,5 @@
+package gui;
+
 import api.ApiClient;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
