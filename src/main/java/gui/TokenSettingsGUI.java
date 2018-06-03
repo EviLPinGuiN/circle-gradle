@@ -1,14 +1,19 @@
 package gui;
 
+import api.ApiClient;
+import io.reactivex.schedulers.Schedulers;
+import model.GithubUserHolder;
+import model.UserHolder;
+
 import javax.swing.*;
+import java.awt.*;
 
 public class TokenSettingsGUI  {
     private JPanel rootPanel;
     private JTextField tokenText;
     private JButton testButton;
-    private JTextArea testText;
+    private JLabel testText;
     private JLabel label;
-    private boolean tokenIsGood = false;
     final StaticComponents stat = StaticComponents.getInstance();
 
     {
@@ -52,16 +57,30 @@ public class TokenSettingsGUI  {
     }
 
     private void createUIComponents() {
-        tokenIsGood = true;
         if(stat.getToken()!=null){
             tokenText.setText(stat.getToken());
+            checkToken();
         }
         testButton.addActionListener(e -> {
-            if(tokenIsGood) {
-                testText.setText("�������");
-                stat.setToken(tokenText.getText());
-            }
+            stat.setToken(tokenText.getText());
+            checkToken();
         });
+    }
+
+    private void checkToken(){
+        ApiClient.getPhraseService()
+                .getProfile()
+                .map(UserHolder::getGithubUserHolder)
+                .map(GithubUserHolder::getGithubUser)
+                .subscribeOn(Schedulers.io())
+                .subscribe(githubUser -> {
+                    String login = githubUser.getLogin();
+                    testText.setText("Success! You logged as " + login);
+                    testText.setForeground(Color.decode("#4CAF50"));
+                }, error ->{
+                    testText.setText("Error! Please, check your token.");
+                    testText.setForeground(Color.RED);
+                });
     }
 
 }
