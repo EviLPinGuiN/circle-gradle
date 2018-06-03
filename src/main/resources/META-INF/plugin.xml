@@ -18,9 +18,10 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow id="CircleCI" icon="/drawables/ic_circle.png" anchor="right"
-                    factoryClass="main.java.ShowWindows"/>
-        <applicationConfigurable groupId="tools" id="circle.configurable" displayName="CircleCI" instance="main.java.SetTokenSettings"/>
-        <applicationService serviceInterface="main.java.StaticComponents" serviceImplementation="main.java.StaticComponents"/>
+                    factoryClass="ShowWindows"/>
+        <applicationConfigurable groupId="tools" id="circle.configurable" displayName="CircleCI"
+                                 instance="SetTokenSettings"/>
+        <applicationService serviceInterface="StaticComponents" serviceImplementation="StaticComponents"/>
     </extensions>
 
     <depends>com.intellij.modules.lang</depends>

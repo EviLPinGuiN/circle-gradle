@@ -1,7 +1,3 @@
-package main.java;
-
-import com.intellij.openapi.components.ServiceManager;
-
 import javax.swing.*;
 
 public class TokenSettingsGUI  {
@@ -60,7 +56,7 @@ public class TokenSettingsGUI  {
         }
         testButton.addActionListener(e -> {
             if(tokenIsGood) {
-                testText.setText("Красава");
+                testText.setText("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
                 stat.setToken(tokenText.getText());
             }
         });
