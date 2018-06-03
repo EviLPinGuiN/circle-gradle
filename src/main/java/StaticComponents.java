@@ -5,14 +5,17 @@ import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 
 @State(
-        name="SingleFileExecutionConfig",
+        name="CircleCIConfig",
         storages = {
-                @Storage("SingleFileExecutionConfig.xml")}
+                @Storage("CircleCIConfig.xml")}
 )
 public class StaticComponents implements PersistentStateComponent<StaticComponents> {
     String token;
 
     public StaticComponents() {
+        if(token == null){
+            token = "";
+        }
         System.out.println("constr");
     }
 

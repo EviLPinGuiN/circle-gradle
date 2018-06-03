@@ -4,7 +4,6 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import com.itis.BuildConfig;
 import io.reactivex.schedulers.Schedulers;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -32,6 +31,7 @@ public class ShowWindows implements ToolWindowFactory {
     private JFXPanel jfxPanel;
     private JButton swingButton;
     private WebEngine webEngine;
+    final StaticComponents stat = StaticComponents.getInstance();
 
 
     @Override
@@ -68,7 +68,7 @@ public class ShowWindows implements ToolWindowFactory {
      * NOT on the AWT-EventQueue Thread
      */
     private void createScene() {
-        String token = BuildConfig.TEST_TOKEN;
+        String token = stat.getToken();
         ApiClient.getPhraseService()
                 .getProfile()
                 .map(UserHolder::getGithubUserHolder)
