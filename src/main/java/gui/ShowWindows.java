@@ -34,33 +34,22 @@ public class ShowWindows implements ToolWindowFactory {
     private JButton swingButton;
     private WebEngine webEngine;
     final StaticComponents stat = StaticComponents.getInstance();
+    private JList list1;
 
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         myToolWindow = toolWindow;
+
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-        myToolWindowContent = new JPanel();
-        myToolWindowContent.setLayout(new BorderLayout());
         initComponents();
-        Content content = contentFactory.createContent(myToolWindowContent, "", false);
+        Content content = contentFactory.createContent(panel1, "", false);
         toolWindow.getContentManager().addContent(content);
     }
 
     private void initComponents() {
-
-        jfxPanel = new JFXPanel();
-        createScene();
-
-        myToolWindowContent.setLayout(new BorderLayout());
-        myToolWindowContent.add(jfxPanel, BorderLayout.CENTER);
-        myToolWindowContent.setMinimumSize(new Dimension(640, 480));
-
-        swingButton = new JButton();
-        swingButton.addActionListener(e -> Platform.runLater(() -> webEngine.reload()));
-        swingButton.setText("Reload");
-
-        myToolWindowContent.add(swingButton, BorderLayout.SOUTH);
+        String[] data = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
+        list1.setListData(data);
     }
 
     /**
