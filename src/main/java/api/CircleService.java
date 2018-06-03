@@ -1,14 +1,54 @@
 package api;
 
 import io.reactivex.Single;
+import model.BuildResponseBody;
+import model.Project;
 import model.UserHolder;
-import retrofit2.http.GET;
-import retrofit2.http.Headers;
-import retrofit2.http.Query;
+import model.build.BuildInfo;
+import retrofit2.http.*;
+
+import java.util.List;
 
 public interface CircleService {
 
     @Headers({"Accept: application/json", "Content-Type: application/json"})
     @GET("me")
-    Single<UserHolder> getProfile(@Query("circle-token") String token);
+    Single<UserHolder> getProfile();
+
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
+    @GET("projects")
+    Single<List<Project>> getAllProjects();
+
+    /**
+     * @return Build summary for each of the last 30 recent builds, ordered by build_num
+     */
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
+    @GET("project/{vcs-type}/{username}/{project}/{build_num}")
+    Single<BuildInfo> getSingleBuildInfo(@Path("vcs-type") String type, @Path("username") String username,
+                                         @Path("project") String project, @Path("build_num") String buildNum);
+
+    /**
+     * @param limit The number of builds to return. Maximum 100, defaults to 30.
+     * @param offset Returns builds starting from this offset, defaults to 0.
+     * @param filter Restricts which builds are returned. Set to "completed",
+     *               "successful", "failed", "running", or defaults to no filter.
+     * @return Build summary for each of the last 30 builds for a single git repo.
+     */
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
+    @GET("project/{vcs-type}/{username}/{project}/{build_num}")
+    Single<BuildInfo> getRecentBuildInfo(@Path("vcs-type") String type, @Path("username") String username,
+                                @Path("project") String project,
+                                @Query("limit") int limit,
+                                @Query("offset") int offset,
+                                @Query("filter") String filter);
+
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
+    @POST("project/{vcs-type}/{username}/{project}/{build_num}/retry")
+    Single<BuildResponseBody> retryBuild(@Path("vcs-type") String type, @Path("username") String username,
+                                         @Path("project") String project, @Path("build_num") String buildNum);
+
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
+    @POST("project/{vcs-type}/{username}/{project}/{build_num}/cancel")
+    Single<BuildResponseBody> cancelBuild(@Path("vcs-type") String type, @Path("username") String username,
+                                          @Path("project") String project, @Path("build_num") String buildNum);
 }

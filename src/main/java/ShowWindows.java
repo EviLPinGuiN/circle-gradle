@@ -70,7 +70,7 @@ public class ShowWindows implements ToolWindowFactory {
     private void createScene() {
         String token = BuildConfig.TEST_TOKEN;
         ApiClient.getPhraseService()
-                .getProfile(token)
+                .getProfile()
                 .map(UserHolder::getGithubUserHolder)
                 .map(GithubUserHolder::getGithubUser)
                 .subscribeOn(Schedulers.io())

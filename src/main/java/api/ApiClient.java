@@ -61,6 +61,7 @@ public final class ApiClient {
 
     private static OkHttpClient buildClient() {
         return new OkHttpClient.Builder()
+                .addInterceptor(TokenInterceptor.create())
                 .build();
     }
 }
