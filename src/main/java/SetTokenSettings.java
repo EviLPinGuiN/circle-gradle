@@ -14,7 +14,7 @@ public class SetTokenSettings implements SearchableConfigurable {
     @Nls
     @Override
     public String getDisplayName() {
-        return "Single File Execution Plugin";
+        return "Circle CI Plugin";
     }
 
     @Nullable
