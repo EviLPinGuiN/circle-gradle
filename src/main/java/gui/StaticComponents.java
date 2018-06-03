@@ -13,6 +13,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
 )
 public class StaticComponents implements PersistentStateComponent<StaticComponents> {
     String token;
+    String project;
 
     public StaticComponents() {
         if(token == null){
@@ -43,5 +44,13 @@ public class StaticComponents implements PersistentStateComponent<StaticComponen
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getProject() {
+        return this.project;
+    }
+
+    public void setProject(String project) {
+        this.project = project;
     }
 }
