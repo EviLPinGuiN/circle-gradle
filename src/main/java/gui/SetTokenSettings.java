@@ -11,6 +11,7 @@ import javax.swing.*;
 public class SetTokenSettings implements SearchableConfigurable {
     TokenSettingsGUI mGUI;
     private JTextField textField;
+    private JList listProjects;
     private String textReset;
     final StaticComponents stat = StaticComponents.getInstance();
     @Nls
@@ -37,17 +38,19 @@ public class SetTokenSettings implements SearchableConfigurable {
         mGUI = new TokenSettingsGUI();
         textField = mGUI.getTextField1();
         textReset = textField.getText();
+        listProjects = mGUI.getListProjects();
         return mGUI.getRootPanel();
     }
 
     @Override
     public boolean isModified() {
-        return (!stat.getToken().equals(textField.getText()));
+        return (!stat.getToken().equals(textField.getText()) || !stat.getProject().equals(listProjects.getSelectedValue()));
     }
 
     @Override
     public void apply() throws ConfigurationException {
         stat.setToken(textField.getText());
+        if(listProjects.getSelectedValue()!=null) stat.setProject(String.valueOf(listProjects.getSelectedValue()));
     }
 
     @Override
