@@ -50,7 +50,7 @@ public class SetTokenSettings implements SearchableConfigurable {
     @Override
     public void apply() throws ConfigurationException {
         stat.setToken(textField.getText());
-        stat.setProject(String.valueOf(listProjects.getSelectedValue()));
+        if(listProjects.getSelectedValue()!=null) stat.setProject(String.valueOf(listProjects.getSelectedValue()));
     }
 
     @Override
