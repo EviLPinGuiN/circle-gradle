@@ -1,20 +1,22 @@
 <idea-plugin>
     <id>com.itis.circle</id>
     <name>CircleCI plugin</name>
-    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">
+    <vendor email="shaihrazievnail@gmail.com" url="https://github.com/EviLPinGuiN/circle-gradle">
         Dinmukhametov Aynur,
+        Faskhetdinov Rustam,
         Shaykhraziev Nail
     </vendor>
 
     <description><![CDATA[
-         CircleCI integration plugin
+         Build and run your project on CircleCI with integration plugin
     ]]></description>
 
-    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-         on how to target different products -->
-    <!-- uncomment to enable plugin in all products
+    <change-notes><![CDATA[
+      0.1: Initial version.<br>
+    ]]>
+    </change-notes>
+
     <depends>com.intellij.modules.lang</depends>
-    -->
 
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow id="CircleCI" icon="/icons/ic_circle.png" anchor="right"
@@ -24,9 +26,14 @@
         <applicationService serviceInterface="gui.StaticComponents" serviceImplementation="gui.StaticComponents"/>
     </extensions>
 
-    <depends>com.intellij.modules.lang</depends>
-
     <actions>
-        <!-- Add your actions here -->
+        <action id="CircleCI.refreshALL" class="actions.RefreshProjects" text="Refresh All"
+                icon="/icons/ic_refresh20.png"/>
+        <group id="CircleCI.ProcessesToolbar">
+            <!--<reference id="HolyProject.RecreateProcesses"/>-->
+            <!--<separator/>-->
+            <!--<reference id="HolyProject.ExpandAll"/>-->
+            <!--<reference id="HolyProject.CollapseAll"/>-->
+        </group>
     </actions>
 </idea-plugin>

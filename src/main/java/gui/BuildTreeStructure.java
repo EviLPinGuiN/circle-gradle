@@ -22,7 +22,8 @@ public class BuildTreeStructure extends SimpleTreeStructure {
 
     private static final String CIRCLE_CI = "CircleCI";
 
-    private final RootNode rootNode;
+    final StaticComponents stat = StaticComponents.getInstance();
+    private RootNode rootNode;
     private final SimpleTreeBuilder simpleTreeBuilder;
 
     public BuildTreeStructure(Project project, JTree tree, List<SimpleBuildInfo> infoList) {
@@ -34,8 +35,9 @@ public class BuildTreeStructure extends SimpleTreeStructure {
         simpleTreeBuilder.expand(rootNode, null);
     }
 
-    public void updateFromRoot() {
-        simpleTreeBuilder.addSubtreeToUpdateByElement(rootNode);
+    public void updateFromRoot(List<SimpleBuildInfo> infoList) {
+        rootNode.updateBuildList(infoList);
+        simpleTreeBuilder.updateFromRoot(true);
     }
 
     @Override
@@ -60,6 +62,13 @@ public class BuildTreeStructure extends SimpleTreeStructure {
             myName = CIRCLE_CI;
             myClosedIcon = IconLoader.getIcon("/icons/ic_circle.png");
             list = info;
+        }
+
+        public void updateBuildList(List<SimpleBuildInfo> info) {
+            list.clear();
+            list.addAll(info);
+            this.cleanUpCache();
+            this.buildChildren();
         }
 
         @Override
@@ -117,8 +126,8 @@ public class BuildTreeStructure extends SimpleTreeStructure {
         }
 
         private void getLogs() {
-            ApiClient.getPhraseService().getSingleBuildInfo("github", "NailShaykhrazievItis",
-                    "lessonTwo", buildNum) //todo: need take username and project from settings
+            ApiClient.getPhraseService().getSingleBuildInfo(stat.getType(), stat.getUserName(),
+                    stat.getProject(), buildNum)
                     .subscribe(buildInfo -> {
                         stepList = buildInfo.getSteps() != null ? buildInfo.getSteps() : new ArrayList<>();
                         updatePresentation();
@@ -153,18 +162,18 @@ public class BuildTreeStructure extends SimpleTreeStructure {
             String path;
             switch (status) {
                 case "failed":
-                    path = "/icons/ic_red.png"; //todo change path to new icons
+                    path = "/icons/ic_failed.png";
                     break;
                 case "success":
-                    path = "/icons/ic_green.png";
+                    path = "/icons/ic_success.png";
                     break;
                 case "running":
                 case "queued":
                 case "scheduled":
-                    path = "/icons/ic_blue.png";
+                    path = "/icons/ic_pending.png";
                     break;
                 default:
-                    path = "/icons/ic_circle.png";
+                    path = "/icons/ic_pending.png";
                     break;
             }
             myClosedIcon = IconLoader.getIcon(path);

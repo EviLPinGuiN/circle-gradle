@@ -1,6 +1,5 @@
 package gui;
 
-import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -14,6 +13,7 @@ public class SetTokenSettings implements SearchableConfigurable {
     private JList listProjects;
     private String textReset;
     final StaticComponents stat = StaticComponents.getInstance();
+
     @Nls
     @Override
     public String getDisplayName() {
@@ -48,11 +48,13 @@ public class SetTokenSettings implements SearchableConfigurable {
     }
 
     @Override
-    public void apply() throws ConfigurationException {
+    public void apply() {
         stat.setToken(textField.getText());
-        if(listProjects.getSelectedValue()!=null) stat.setProject(String.valueOf(listProjects.getSelectedValue()));
-    }
+        if (listProjects.getSelectedValue() != null) {
+            stat.setProject(String.valueOf(listProjects.getSelectedValue()));
+        }
 
+    }
     @Override
     public void disposeUIResources() {
         mGUI = null;
