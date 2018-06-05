@@ -4,91 +4,72 @@ import api.ApiClient;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
+import com.intellij.ui.ColoredTreeCellRenderer;
+import com.intellij.ui.JBColor;
+import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import io.reactivex.schedulers.Schedulers;
-import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.Scene;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
-import javafx.stage.Stage;
-import model.GithubUserHolder;
-import model.UserHolder;
+import com.intellij.ui.treeStructure.SimpleTree;
+import com.intellij.ui.treeStructure.SimpleTreeStructure;
+import com.itis.BuildConfig;
+import model.build.BuildInfo;
+import model.list_element.SimpleBuildInfo;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ShowWindows implements ToolWindowFactory {
 
+    private static final String GITHUB = "github";
+
     private ToolWindow myToolWindow;
     private JPanel myToolWindowContent;
-    private JTextField txtURL = new JTextField("Hello World!");
-    private JButton startButton;
-    private JPanel panel1;
-    private Stage stage;
-    private WebView browser;
-    private JFXPanel jfxPanel;
-    private JButton swingButton;
-    private WebEngine webEngine;
+    private ColoredTreeCellRenderer coloredTreeCellRenderer;
+    private SimpleTree buildTree;
+
     final StaticComponents stat = StaticComponents.getInstance();
+    private SimpleTreeStructure buildStructure;
 
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         myToolWindow = toolWindow;
+
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-        myToolWindowContent = new JPanel();
+
+        buildTree = new SimpleTree();
+        buildTree.setRootVisible(true);
+
+        ApiClient.getPhraseService() // todo: need take username and project from settings
+                .getRecentBuildInfo(GITHUB, "NailShaykhrazievItis",
+                        "lessonTwo", BuildConfig.RECENT_BUILD_COUNT, null, null)
+                .subscribe(list -> {
+                    List<SimpleBuildInfo> simpleBuildInfoList = new ArrayList<>();
+                    for (BuildInfo info : list) {
+                        SimpleBuildInfo temp = new SimpleBuildInfo();
+                        temp = temp.convertBuildInfoToSimple(info);
+                        simpleBuildInfoList.add(temp);
+                    }
+                    buildStructure = new BuildTreeStructure(project, buildTree, simpleBuildInfoList);
+
+                    addViewToScene(contentFactory, toolWindow, ScrollPaneFactory.createScrollPane(buildTree));
+                }, error -> {
+                    JLabel errorLabel = new JLabel();
+                    errorLabel.setText(error.getMessage());
+                    errorLabel.setForeground(JBColor.RED);
+                    addViewToScene(contentFactory, toolWindow, errorLabel);
+                });
+    }
+
+    private void addViewToScene(ContentFactory contentFactory, ToolWindow toolWindow, Component comp) {
         myToolWindowContent.setLayout(new BorderLayout());
-        initComponents();
+        myToolWindowContent.add(comp, BorderLayout.CENTER);
+
         Content content = contentFactory.createContent(myToolWindowContent, "", false);
         toolWindow.getContentManager().addContent(content);
-    }
-
-    private void initComponents() {
-
-        jfxPanel = new JFXPanel();
-        createScene();
-
-        myToolWindowContent.setLayout(new BorderLayout());
-        myToolWindowContent.add(jfxPanel, BorderLayout.CENTER);
-        myToolWindowContent.setMinimumSize(new Dimension(640, 480));
-
-        swingButton = new JButton();
-        swingButton.addActionListener(e -> Platform.runLater(() -> webEngine.reload()));
-        swingButton.setText("Reload");
-
-        myToolWindowContent.add(swingButton, BorderLayout.SOUTH);
-    }
-
-    /**
-     * createScene
-     * <p>
-     * Note: Key is that Scene needs to be created and run on "FX user thread"
-     * NOT on the AWT-EventQueue Thread
-     */
-    private void createScene() {
-        String token = stat.getToken();
-        ApiClient.getPhraseService()
-                .getProfile()
-                .map(UserHolder::getGithubUserHolder)
-                .map(GithubUserHolder::getGithubUser)
-                .subscribeOn(Schedulers.io())
-                .subscribe(githubUser -> {
-                    String login = githubUser.getLogin();
-                    String name = githubUser.getName();
-                });
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                WebView view = new WebView();
-                webEngine = view.getEngine();
-                webEngine.load("https://circleci.com/");
-                Scene scene = new Scene(view);
-                jfxPanel.setScene(scene);
-            }
-        });
     }
 }

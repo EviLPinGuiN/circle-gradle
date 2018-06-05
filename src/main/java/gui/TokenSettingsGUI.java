@@ -1,6 +1,7 @@
 package gui;
 
 import api.ApiClient;
+import com.intellij.ui.JBColor;
 import io.reactivex.schedulers.Schedulers;
 import model.GithubUserHolder;
 import model.Project;
@@ -119,7 +120,7 @@ public class TokenSettingsGUI {
                     if(stat.getProject() != null) listProjects.setSelectedValue(stat.getProject(), true);
                 }, error -> {
                     testText.setText("Error! Please, check your token.");
-                    testText.setForeground(Color.RED);
+                    testText.setForeground(JBColor.RED);
                 });
     }
 

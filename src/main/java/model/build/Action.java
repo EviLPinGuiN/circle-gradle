@@ -46,7 +46,7 @@ public class Action {
     @SerializedName("step")
     private Integer step;
     @SerializedName("run_time_millis")
-    private Integer runTimeMillis;
+    private Long runTimeMillis;
     @SerializedName("has_output")
     private Boolean hasOutput;
     @SerializedName("source")
@@ -204,11 +204,11 @@ public class Action {
         this.step = step;
     }
 
-    public Integer getRunTimeMillis() {
+    public Long getRunTimeMillis() {
         return runTimeMillis;
     }
 
-    public void setRunTimeMillis(Integer runTimeMillis) {
+    public void setRunTimeMillis(Long runTimeMillis) {
         this.runTimeMillis = runTimeMillis;
     }
 
