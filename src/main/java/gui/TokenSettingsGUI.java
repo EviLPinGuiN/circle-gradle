@@ -1,6 +1,7 @@
 package gui;
 
 import api.ApiClient;
+import com.intellij.ui.JBColor;
 import io.reactivex.schedulers.Schedulers;
 import model.GithubUserHolder;
 import model.UserHolder;
@@ -79,7 +80,7 @@ public class TokenSettingsGUI  {
                     testText.setForeground(Color.decode("#4CAF50"));
                 }, error ->{
                     testText.setText("Error! Please, check your token.");
-                    testText.setForeground(Color.RED);
+                    testText.setForeground(JBColor.RED);
                 });
     }
 

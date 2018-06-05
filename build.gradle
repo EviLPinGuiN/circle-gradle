@@ -26,6 +26,7 @@ buildConfig {
     charset = 'UTF-8'
     buildConfigField 'String', 'BASE_URL', baseUrl
     buildConfigField 'String', 'TEST_TOKEN', testToken
+    buildConfigField 'Integer', 'RECENT_BUILD_COUNT', recentBuildCount
 }
 
 dependencies {
