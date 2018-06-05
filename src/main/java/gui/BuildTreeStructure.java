@@ -153,18 +153,18 @@ public class BuildTreeStructure extends SimpleTreeStructure {
             String path;
             switch (status) {
                 case "failed":
-                    path = "/icons/ic_red.png"; //todo change path to new icons
+                    path = "/icons/ic_failed.png";
                     break;
                 case "success":
-                    path = "/icons/ic_green.png";
+                    path = "/icons/ic_success.png";
                     break;
                 case "running":
                 case "queued":
                 case "scheduled":
-                    path = "/icons/ic_blue.png";
+                    path = "/icons/ic_pending.png";
                     break;
                 default:
-                    path = "/icons/ic_circle.png";
+                    path = "/icons/ic_pending.png";
                     break;
             }
             myClosedIcon = IconLoader.getIcon(path);
