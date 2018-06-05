@@ -1,9 +1,10 @@
 package gui;
 
+import actions.RefreshProjects;
 import api.ApiClient;
-import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
+import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
@@ -27,8 +28,6 @@ import java.util.List;
 
 public class ShowWindows implements ToolWindowFactory {
 
-    private static final String GITHUB = "github";
-
     private ToolWindow myToolWindow;
     private JPanel myToolWindowContent;
     private JButton button1;
@@ -47,16 +46,15 @@ public class ShowWindows implements ToolWindowFactory {
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         myToolWindow = toolWindow;
         myProject = project;
-        ActionGroup actionGroup =
-                (ActionGroup)ActionManager.getInstance().getAction("CircleCI.ProcessesToolbar");
-        _toolbar =
-                ActionManager.getInstance().createActionToolbar("CircleCI.ProcessesToolbar",
+        DefaultActionGroup actionGroup =
+                (DefaultActionGroup) ActionManager.getInstance().getAction("CircleCI.ProcessesToolbar");
+        actionGroup.add(new RefreshProjects(this));
+        _toolbar = ActionManager.getInstance().createActionToolbar("CircleCI.ProcessesToolbar",
                         actionGroup, true);
         contentFactory = ContentFactory.SERVICE.getInstance();
         buildTree = new SimpleTree();
         buildTree.setRootVisible(true);
         createTree();
-
     }
 
     private void addViewToScene(ContentFactory contentFactory, ToolWindow toolWindow, Component comp) {
@@ -67,17 +65,12 @@ public class ShowWindows implements ToolWindowFactory {
         toolWindow.getContentManager().addContent(content);
     }
 
-    private void createTree(){
-        ApiClient.getPhraseService() // todo: need take username and project from settings
+    private void createTree() {
+        ApiClient.getPhraseService()
                 .getRecentBuildInfo(stat.getType(), stat.getUserName(),
                         stat.getProject(), BuildConfig.RECENT_BUILD_COUNT, null, null)
                 .subscribe(list -> {
-                    List<SimpleBuildInfo> simpleBuildInfoList = new ArrayList<>();
-                    for (BuildInfo info : list) {
-                        SimpleBuildInfo temp = new SimpleBuildInfo();
-                        temp = temp.convertBuildInfoToSimple(info);
-                        simpleBuildInfoList.add(temp);
-                    }
+                    List<SimpleBuildInfo> simpleBuildInfoList = convertToSimpleBuildInfo(list);
                     buildStructure = new BuildTreeStructure(myProject, buildTree, simpleBuildInfoList);
 
                     addViewToScene(contentFactory, myToolWindow, ScrollPaneFactory.createScrollPane(buildTree));
@@ -89,4 +82,33 @@ public class ShowWindows implements ToolWindowFactory {
                 });
     }
 
+    @NotNull
+    private List<SimpleBuildInfo> convertToSimpleBuildInfo(List<BuildInfo> list) {
+        List<SimpleBuildInfo> simpleBuildInfoList = new ArrayList<>();
+        for (BuildInfo info : list) {
+            SimpleBuildInfo temp = new SimpleBuildInfo();
+            temp = temp.convertBuildInfoToSimple(info);
+            simpleBuildInfoList.add(temp);
+        }
+        return simpleBuildInfoList;
+    }
+
+    public void synchronizeView() {
+        ApiClient.getPhraseService()
+                .getRecentBuildInfo(stat.getType(), stat.getUserName(),
+                        stat.getProject(), BuildConfig.RECENT_BUILD_COUNT, null, null)
+                .subscribe(list -> {
+                    if (buildStructure instanceof BuildTreeStructure) {
+                        List<SimpleBuildInfo> simpleBuildInfoList = convertToSimpleBuildInfo(list);
+                        ((BuildTreeStructure) buildStructure).updateFromRoot(simpleBuildInfoList);
+
+                    }
+                }, error -> {
+                    System.out.println(error.getMessage());
+                });
+    }
+
+    public void errorWindow(final String message) {
+
+    }
 }

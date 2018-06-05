@@ -22,7 +22,8 @@ public class BuildTreeStructure extends SimpleTreeStructure {
 
     private static final String CIRCLE_CI = "CircleCI";
 
-    private final RootNode rootNode;
+    final StaticComponents stat = StaticComponents.getInstance();
+    private RootNode rootNode;
     private final SimpleTreeBuilder simpleTreeBuilder;
 
     public BuildTreeStructure(Project project, JTree tree, List<SimpleBuildInfo> infoList) {
@@ -34,8 +35,9 @@ public class BuildTreeStructure extends SimpleTreeStructure {
         simpleTreeBuilder.expand(rootNode, null);
     }
 
-    public void updateFromRoot() {
-        simpleTreeBuilder.addSubtreeToUpdateByElement(rootNode);
+    public void updateFromRoot(List<SimpleBuildInfo> infoList) {
+        rootNode.updateBuildList(infoList);
+        simpleTreeBuilder.updateFromRoot(true);
     }
 
     @Override
@@ -60,6 +62,13 @@ public class BuildTreeStructure extends SimpleTreeStructure {
             myName = CIRCLE_CI;
             myClosedIcon = IconLoader.getIcon("/icons/ic_circle.png");
             list = info;
+        }
+
+        public void updateBuildList(List<SimpleBuildInfo> info) {
+            list.clear();
+            list.addAll(info);
+            this.cleanUpCache();
+            this.buildChildren();
         }
 
         @Override
@@ -117,8 +126,8 @@ public class BuildTreeStructure extends SimpleTreeStructure {
         }
 
         private void getLogs() {
-            ApiClient.getPhraseService().getSingleBuildInfo("github", "NailShaykhrazievItis",
-                    "lessonTwo", buildNum) //todo: need take username and project from settings
+            ApiClient.getPhraseService().getSingleBuildInfo(stat.getType(), stat.getUserName(),
+                    stat.getProject(), buildNum)
                     .subscribe(buildInfo -> {
                         stepList = buildInfo.getSteps() != null ? buildInfo.getSteps() : new ArrayList<>();
                         updatePresentation();

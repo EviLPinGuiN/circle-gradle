@@ -30,7 +30,6 @@
         <action id="CircleCI.refreshALL" class="actions.RefreshProjects" text="Refresh All"
                 icon="/icons/ic_refresh20.png"/>
         <group id="CircleCI.ProcessesToolbar">
-            <reference id="CircleCI.refreshALL"/>
             <!--<reference id="HolyProject.RecreateProcesses"/>-->
             <!--<separator/>-->
             <!--<reference id="HolyProject.ExpandAll"/>-->
