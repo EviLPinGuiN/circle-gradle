@@ -6,11 +6,8 @@ import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 
-@State(
-        name="CircleCIConfig",
-        storages = {
-                @Storage("CircleCIConfig.xml")}
-)
+@State(name = "CircleCIConfig", storages = {
+        @Storage("CircleCIConfig.xml")})
 public class StaticComponents implements PersistentStateComponent<StaticComponents> {
     private String token;
     private String project;
@@ -18,8 +15,17 @@ public class StaticComponents implements PersistentStateComponent<StaticComponen
     private String type;
 
     public StaticComponents() {
-        if(token == null){
+        if (token == null) {
             token = "";
+        }
+        if (project == null) {
+            project = "";
+        }
+        if (username == null) {
+            username = "";
+        }
+        if (type == null) {
+            type = "";
         }
         System.out.println("constr");
     }
@@ -71,5 +77,4 @@ public class StaticComponents implements PersistentStateComponent<StaticComponen
     public void setType(String type) {
         this.type = type;
     }
-
 }

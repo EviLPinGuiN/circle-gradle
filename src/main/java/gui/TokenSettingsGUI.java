@@ -14,7 +14,7 @@ import java.util.List;
 
 public class TokenSettingsGUI {
     final StaticComponents stat = StaticComponents.getInstance();
-    ArrayList<String> data = new ArrayList<String>();
+    ArrayList<String> data = new ArrayList<>();
     private JPanel rootPanel;
     private JTextField tokenText;
     private JButton testButton;
@@ -126,6 +126,4 @@ public class TokenSettingsGUI {
                     testText.setForeground(JBColor.RED);
                 });
     }
-
-
 }
