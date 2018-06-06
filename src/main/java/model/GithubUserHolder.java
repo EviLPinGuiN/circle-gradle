@@ -2,7 +2,6 @@ package model;
 
 import com.google.gson.annotations.SerializedName;
 
-
 public class GithubUserHolder {
 
     @SerializedName("github")

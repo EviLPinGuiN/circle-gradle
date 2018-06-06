@@ -7,25 +7,25 @@ import gui.ShowWindows;
 
 import javax.swing.*;
 
-public class Rebuild extends AnAction {
+public class RefreshProjectsAction extends AnAction {
 
-    private static final Icon REFRESH_ICON = IconLoader.getIcon("/icons/ic_rebuild20.png");
+    private static final Icon REFRESH_ICON = IconLoader.getIcon("/icons/ic_refresh20.png");
     private ShowWindows windows;
 
-    public Rebuild() {
+    public RefreshProjectsAction() {
     }
 
-    public Rebuild(ShowWindows windows) {
-        super("Rebuild", "Retries the build,", REFRESH_ICON);
+    public RefreshProjectsAction(ShowWindows windows) {
+        super("Synchronize", "Synchronize current builds", REFRESH_ICON);
         this.windows = windows;
     }
 
     @Override
     public void actionPerformed(AnActionEvent event) {
         try {
-            windows.retryLastBuild();
+            windows.synchronizeView();
         } catch (Exception ex) {
-            windows.errorWindow("Unable to retry: " + ex.getMessage());
+            windows.errorWindow("Unable to synchronize: " + ex.getMessage());
         }
     }
 }

@@ -2,7 +2,6 @@ package model.build;
 
 import com.google.gson.annotations.SerializedName;
 
-
 public class User {
 
     @SerializedName("is_user")

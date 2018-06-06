@@ -27,11 +27,6 @@
     </extensions>
 
     <actions>
-        <group id="CircleCI.ProcessesToolbar">
-            <!--<reference id="HolyProject.RecreateProcesses"/>-->
-            <!--<separator/>-->
-            <!--<reference id="HolyProject.ExpandAll"/>-->
-            <!--<reference id="HolyProject.CollapseAll"/>-->
-        </group>
+        <group id="CircleCI.ProcessesToolbar"/>
     </actions>
 </idea-plugin>

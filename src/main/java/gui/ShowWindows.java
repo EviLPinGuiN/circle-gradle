@@ -1,7 +1,8 @@
 package gui;
 
-import actions.Rebuild;
-import actions.RefreshProjects;
+import actions.OpenSettingsAction;
+import actions.RebuildAction;
+import actions.RefreshProjectsAction;
 import api.ApiClient;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
@@ -25,7 +26,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class ShowWindows implements ToolWindowFactory {
 
     private ToolWindow myToolWindow;
@@ -48,9 +48,10 @@ public class ShowWindows implements ToolWindowFactory {
         myProject = project;
         DefaultActionGroup actionGroup =
                 (DefaultActionGroup) ActionManager.getInstance().getAction("CircleCI.ProcessesToolbar");
-        actionGroup.add(new RefreshProjects(this));
+        actionGroup.add(new RefreshProjectsAction(this));
+        actionGroup.add(new RebuildAction(this));
         actionGroup.addSeparator();
-        actionGroup.add(new Rebuild(this));
+        actionGroup.add(new OpenSettingsAction());
         _toolbar = ActionManager.getInstance().createActionToolbar("CircleCI.ProcessesToolbar",
                 actionGroup, true);
         contentFactory = ContentFactory.SERVICE.getInstance();
