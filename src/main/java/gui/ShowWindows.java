@@ -1,6 +1,8 @@
 package gui;
 
-import actions.RefreshProjects;
+import actions.OpenSettingsAction;
+import actions.RebuildAction;
+import actions.RefreshProjectsAction;
 import api.ApiClient;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
@@ -8,7 +10,6 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
-import com.intellij.ui.ColoredTreeCellRenderer;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.content.Content;
@@ -25,7 +26,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class ShowWindows implements ToolWindowFactory {
 
     private ToolWindow myToolWindow;
@@ -33,7 +33,6 @@ public class ShowWindows implements ToolWindowFactory {
     private JButton button1;
     private JPanel panel111;
     private JPanel workPanel;
-    private ColoredTreeCellRenderer coloredTreeCellRenderer;
     private SimpleTree buildTree;
 
     final StaticComponents stat = StaticComponents.getInstance();
@@ -41,6 +40,7 @@ public class ShowWindows implements ToolWindowFactory {
     private ActionToolbar _toolbar;
     private ContentFactory contentFactory;
     private Project myProject;
+    private int buildNum;
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
@@ -48,9 +48,12 @@ public class ShowWindows implements ToolWindowFactory {
         myProject = project;
         DefaultActionGroup actionGroup =
                 (DefaultActionGroup) ActionManager.getInstance().getAction("CircleCI.ProcessesToolbar");
-        actionGroup.add(new RefreshProjects(this));
+        actionGroup.add(new RefreshProjectsAction(this));
+        actionGroup.add(new RebuildAction(this));
+        actionGroup.addSeparator();
+        actionGroup.add(new OpenSettingsAction());
         _toolbar = ActionManager.getInstance().createActionToolbar("CircleCI.ProcessesToolbar",
-                        actionGroup, true);
+                actionGroup, true);
         contentFactory = ContentFactory.SERVICE.getInstance();
         buildTree = new SimpleTree();
         buildTree.setRootVisible(true);
@@ -70,6 +73,7 @@ public class ShowWindows implements ToolWindowFactory {
                 .getRecentBuildInfo(stat.getType(), stat.getUserName(),
                         stat.getProject(), BuildConfig.RECENT_BUILD_COUNT, null, null)
                 .subscribe(list -> {
+                    buildNum = list.get(0).getBuildNum();
                     List<SimpleBuildInfo> simpleBuildInfoList = convertToSimpleBuildInfo(list);
                     buildStructure = new BuildTreeStructure(myProject, buildTree, simpleBuildInfoList);
 
@@ -110,5 +114,21 @@ public class ShowWindows implements ToolWindowFactory {
 
     public void errorWindow(final String message) {
 
+    }
+
+    public void retryLastBuild() {
+        int selectedIndex = buildTree.getSelectedNode().getIndex() <= 0 ? 0 : buildTree.getSelectedNode().getIndex();
+        int requestBuildNum = buildNum - selectedIndex;
+        ApiClient.getPhraseService().retryBuild(stat.getType(), stat.getUserName(),
+                stat.getProject(), requestBuildNum)
+                .subscribe(build -> {
+                    if (buildStructure instanceof BuildTreeStructure) {
+                        SimpleBuildInfo temp = new SimpleBuildInfo();
+                        temp = temp.convertBuildResponseBodyToSimple(build);
+                        ((BuildTreeStructure) buildStructure).updateFromRoot(temp);
+                    }
+                }, error -> {
+
+                });
     }
 }

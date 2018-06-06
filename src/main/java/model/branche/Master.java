@@ -1,6 +1,5 @@
 package model.branche;
 
-
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;

@@ -47,10 +47,10 @@ public interface CircleService {
     @Headers({"Accept: application/json", "Content-Type: application/json"})
     @POST("project/{vcs-type}/{username}/{project}/{build_num}/retry")
     Single<BuildResponseBody> retryBuild(@Path("vcs-type") String type, @Path("username") String username,
-                                         @Path("project") String project, @Path("build_num") String buildNum);
+                                         @Path("project") String project, @Path("build_num") int buildNum);
 
     @Headers({"Accept: application/json", "Content-Type: application/json"})
     @POST("project/{vcs-type}/{username}/{project}/{build_num}/cancel")
     Single<BuildResponseBody> cancelBuild(@Path("vcs-type") String type, @Path("username") String username,
-                                          @Path("project") String project, @Path("build_num") String buildNum);
+                                          @Path("project") String project, @Path("build_num") int buildNum);
 }

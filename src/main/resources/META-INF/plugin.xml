@@ -27,13 +27,6 @@
     </extensions>
 
     <actions>
-        <action id="CircleCI.refreshALL" class="actions.RefreshProjects" text="Refresh All"
-                icon="/icons/ic_refresh20.png"/>
-        <group id="CircleCI.ProcessesToolbar">
-            <!--<reference id="HolyProject.RecreateProcesses"/>-->
-            <!--<separator/>-->
-            <!--<reference id="HolyProject.ExpandAll"/>-->
-            <!--<reference id="HolyProject.CollapseAll"/>-->
-        </group>
+        <group id="CircleCI.ProcessesToolbar"/>
     </actions>
 </idea-plugin>

@@ -1,6 +1,5 @@
 package model.build;
 
-
 import com.google.gson.annotations.SerializedName;
 import model.Previous;
 

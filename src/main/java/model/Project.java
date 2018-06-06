@@ -3,7 +3,6 @@ package model;
 import com.google.gson.annotations.SerializedName;
 import model.branche.Branches;
 
-
 public class Project {
 
     @SerializedName("vcs_url")

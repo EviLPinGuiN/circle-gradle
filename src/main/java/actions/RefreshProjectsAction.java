@@ -7,15 +7,15 @@ import gui.ShowWindows;
 
 import javax.swing.*;
 
-public class RefreshProjects extends AnAction {
+public class RefreshProjectsAction extends AnAction {
 
     private static final Icon REFRESH_ICON = IconLoader.getIcon("/icons/ic_refresh20.png");
     private ShowWindows windows;
 
-    public RefreshProjects() {
+    public RefreshProjectsAction() {
     }
 
-    public RefreshProjects(ShowWindows windows) {
+    public RefreshProjectsAction(ShowWindows windows) {
         super("Synchronize", "Synchronize current builds", REFRESH_ICON);
         this.windows = windows;
     }
