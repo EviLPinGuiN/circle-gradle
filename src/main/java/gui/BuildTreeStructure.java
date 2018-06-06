@@ -6,7 +6,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.ui.SimpleTextAttributes;
-import com.intellij.ui.treeStructure.*;
+import com.intellij.ui.treeStructure.CachingSimpleNode;
+import com.intellij.ui.treeStructure.SimpleNode;
+import com.intellij.ui.treeStructure.SimpleTreeBuilder;
+import com.intellij.ui.treeStructure.SimpleTreeStructure;
 import com.itis.BuildConfig;
 import model.build.Step;
 import model.list_element.SimpleBuildInfo;
@@ -14,7 +17,6 @@ import model.list_element.SimpleLogInfo;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeModel;
-import java.awt.event.InputEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +39,11 @@ public class BuildTreeStructure extends SimpleTreeStructure {
 
     public void updateFromRoot(List<SimpleBuildInfo> infoList) {
         rootNode.updateBuildList(infoList);
+        simpleTreeBuilder.updateFromRoot(true);
+    }
+
+    public void updateFromRoot(SimpleBuildInfo single) {
+        rootNode.addToBuildList(single);
         simpleTreeBuilder.updateFromRoot(true);
     }
 
@@ -69,6 +76,21 @@ public class BuildTreeStructure extends SimpleTreeStructure {
             list.addAll(info);
             this.cleanUpCache();
             this.buildChildren();
+            updatePresentation();
+        }
+
+        public void addToBuildList(SimpleBuildInfo build) {
+            list.add(0, build);
+            this.cleanUpCache();
+            this.buildChildren();
+            updatePresentation();
+        }
+
+        private void updatePresentation() {
+            PresentationData presentation = getPresentation();
+            presentation.clear();
+            presentation.addText(myName, SimpleTextAttributes.REGULAR_ATTRIBUTES);
+            update(presentation);
         }
 
         @Override
@@ -136,12 +158,18 @@ public class BuildTreeStructure extends SimpleTreeStructure {
 
         @Override
         protected SimpleNode[] buildChildren() {
-            SimpleNode[] nodes = new SimpleNode[stepList.size()];
-            for (int i = 0; i < stepList.size(); i++) {
-                SimpleLogInfo logInfo = new SimpleLogInfo();
-                logInfo = logInfo.convertBuildInfoToSimpleLog(stepList.get(i).getActions().get(0));
-                String levelTwoNodeName = logInfo.getName();
-                nodes[i] = new LogNode(this, levelTwoNodeName, logInfo.getStatus(), logInfo.getRunTimeMillis());
+            SimpleNode[] nodes;
+            if (stepList != null && stepList.size() > 0) {
+                nodes = new SimpleNode[stepList.size()];
+                for (int i = 0; i < stepList.size(); i++) {
+                    SimpleLogInfo logInfo = new SimpleLogInfo();
+                    logInfo = logInfo.convertBuildInfoToSimpleLog(stepList.get(i).getActions().get(0));
+                    String levelTwoNodeName = logInfo.getName();
+                    nodes[i] = new LogNode(this, levelTwoNodeName, logInfo.getStatus(), logInfo.getRunTimeMillis());
+                }
+            } else {
+                nodes = new SimpleNode[1];
+                nodes[1] = new LogNode(this, "Not information", "pending", 1L);
             }
             return nodes;
         }
@@ -183,12 +211,11 @@ public class BuildTreeStructure extends SimpleTreeStructure {
             PresentationData presentation = getPresentation();
             presentation.clear();
             presentation.addText(myName, SimpleTextAttributes.REGULAR_ATTRIBUTES);
+            if (mills == null) {
+                mills = 1L;
+            }
             presentation.addText(" " + mills.toString() + " ms", SimpleTextAttributes.GRAYED_BOLD_ATTRIBUTES);
-        }
-
-        @Override
-        public void handleDoubleClickOrEnter(SimpleTree tree, InputEvent inputEvent) {
-            // TODO: 05.06.2018 retry build click maybe
+            update(presentation);
         }
 
         @Override

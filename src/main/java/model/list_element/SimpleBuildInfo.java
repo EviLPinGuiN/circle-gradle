@@ -1,5 +1,6 @@
 package model.list_element;
 
+import model.BuildResponseBody;
 import model.build.BuildInfo;
 
 /**
@@ -14,6 +15,15 @@ public class SimpleBuildInfo {
     private String status;
 
     public SimpleBuildInfo convertBuildInfoToSimple(BuildInfo info) {
+        this.setBranch(info.getBranch());
+        this.setBuildNum(info.getBuildNum());
+        this.setRepoName(info.getReponame());
+        this.setUsername(info.getUsername());
+        this.setStatus(info.getStatus());
+        return this;
+    }
+
+    public SimpleBuildInfo convertBuildResponseBodyToSimple(BuildResponseBody info) {
         this.setBranch(info.getBranch());
         this.setBuildNum(info.getBuildNum());
         this.setRepoName(info.getReponame());
